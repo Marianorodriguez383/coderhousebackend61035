@@ -16,15 +16,8 @@
     "thumbnail": "imagen2",
     "code": "ABD1234",
     "stock": 60
-  },{
-    "id": 3,
-    "title": "Producto 3",
-    "description": "Descripción producto 3",
-    "price": 20,
-    "thumbnail": "imagen3",
-    "code": "ABD124",
-    "stock": 61
-  },{
+  },
+  {
     "id": 4,
     "title": "Producto 4",
     "description": "Descripción producto 4",

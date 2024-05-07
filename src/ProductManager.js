@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs/promises';
 
 class ProductManager {
     constructor(filePath) {
@@ -7,19 +7,19 @@ class ProductManager {
         this.loadProducts();
     }
 
-    loadProducts() {
+    async loadProducts() {
         try {
-            const data = fs.readFileSync(this.path, 'utf8');
+            const data = await fs.readFile(this.path, 'utf8');
             this.products = JSON.parse(data);
         } catch (error) {
             console.error("Error al cargar los productos:", error.message);
         }           
     }
 
-    saveProducts() {
+    async saveProducts() {
         try {
             const data = JSON.stringify(this.products, null, 2);
-            fs.writeFileSync(this.path, data);
+            await fs.writeFile(this.path, data);
         } catch (error) {
             console.error("Error al guardar los productos:", error.message);
         }
@@ -40,4 +40,4 @@ class ProductManager {
     
 }
 
-module.exports = ProductManager;
+export default ProductManager;
