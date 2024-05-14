@@ -40,9 +40,10 @@ productsRouter.get("/:id", async (req, res) => {
 
   
 
-// Ruta POST /api/products para agregar un nuevo producto
 productsRouter.post("/", async (req, res) => {
   const newProduct = req.body;
+  
+  console.log("Datos del nuevo producto:", newProduct);
   try {
     const data = await fs.readFile("src/products.json", "utf8");
     const products = JSON.parse(data);
@@ -54,6 +55,7 @@ productsRouter.post("/", async (req, res) => {
     res.status(500).json({ error: "Error al guardar el producto" });
   }
 });
+
 
 // Ruta PUT /api/products/:id para actualizar un producto por su ID
 productsRouter.put("/:id", async (req, res) => {

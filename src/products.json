@@ -79,5 +79,14 @@
     "thumbnail": "imagen10",
     "code": "ABD134",
     "stock": 70
+  },
+  {
+    "id": 11,
+    "title": "Producto 11",
+    "description": "Descripción producto 11",
+    "price": 73,
+    "thumbnail": "imagen11",
+    "code": "ABD194",
+    "stock": 78
   }
 ]
