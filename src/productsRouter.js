@@ -17,36 +17,35 @@ productsRouter.get("/", async (req, res) => {
 
 // Ruta GET /api/products/:id para obtener un producto por su ID
 productsRouter.get("/:id", async (req, res) => {
-    const productId = req.params.id; 
-    try {
-      
-      const data = await fs.readFile("src/products.json", "utf8");
-      const products = JSON.parse(data);
-      const product = products.find((product) => String(product.id) === productId);
-      
-      if (!product) {
-        
-        res.status(404).json({ error: "Producto no encontrado" });
-        return;
-      }
-      
-      
-      res.json(product);
-    } catch (error) {
-      console.error("Error al leer el archivo de productos:", error.message);
-      res.status(500).json({ error: "Error al leer el archivo de productoxxx" });
-    }
-});
-
-  
-
-productsRouter.post("/", async (req, res) => {
-  const newProduct = req.body;
-  
-  console.log("Datos del nuevo producto:", newProduct);
+  const productId = req.params.id; 
   try {
     const data = await fs.readFile("src/products.json", "utf8");
     const products = JSON.parse(data);
+    const product = products.find((product) => String(product.id) === productId);
+    if (!product) {
+      res.status(404).json({ error: "Producto no encontrado" });
+      return;
+    }
+    res.json(product);
+  } catch (error) {
+    console.error("Error al leer el archivo de productos:", error.message);
+    res.status(500).json({ error: "Error al leer el archivo de productos" });
+  }
+});
+
+// Función para generar un ID único
+const generateUniqueId = (products) => {
+  const maxId = products.reduce((max, product) => Math.max(max, product.id), 0);
+  return maxId + 1;
+};
+
+// Ruta POST /api/products para agregar un nuevo producto
+productsRouter.post("/", async (req, res) => {
+  const newProduct = req.body;
+  try {
+    const data = await fs.readFile("src/products.json", "utf8");
+    const products = JSON.parse(data);
+    newProduct.id = generateUniqueId(products);
     products.push(newProduct);
     await fs.writeFile("src/products.json", JSON.stringify(products, null, 2));
     res.status(201).json(newProduct);
@@ -55,7 +54,6 @@ productsRouter.post("/", async (req, res) => {
     res.status(500).json({ error: "Error al guardar el producto" });
   }
 });
-
 
 // Ruta PUT /api/products/:id para actualizar un producto por su ID
 productsRouter.put("/:id", async (req, res) => {
@@ -99,3 +97,8 @@ productsRouter.delete("/:id", async (req, res) => {
 });
 
 export default productsRouter;
+
+
+
+
+

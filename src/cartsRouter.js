@@ -23,7 +23,7 @@ cartsRouter.post("/", async (req, res) => {
 cartsRouter.get("/:cid", async (req, res) => {
   const cartId = req.params.cid;
   try {
-    // Leer el carrito correspondiente al ID proporcionado
+    // Carrito correspondiente al ID proporcionado
     const cart = await getCartById(cartId);
     if (!cart) {
       res.status(404).json({ error: "Carrito no encontrado" });
@@ -60,13 +60,13 @@ cartsRouter.post("/:cid/product/:pid", async (req, res) => {
         return;
       }
   
-      // Verificar si el producto ya está en el carrito
+      // Verifica si el producto ya está en el carrito
       const existingProduct = cart.products.find(product => product.id === productId);
       if (existingProduct) {
-        // Si el producto ya está en el carrito, incrementar su cantidad
+        // Si el producto ya está en el carrito, incrementa su cantidad
         existingProduct.quantity += quantity || 1;
       } else {
-        // Si el producto no está en el carrito, añadirlo con la cantidad especificada
+        // Si el producto no está en el carrito, añadir con la cantidad especificada
         cart.products.push({ ...product, quantity: quantity || 1 });
       }
   

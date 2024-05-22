@@ -5,6 +5,11 @@ class ProductManager {
         this.path = filePath;
         this.products = [];
         this.loadProducts();
+        this.io = null;
+    }
+
+    setSocket(io) {
+        this.io = io;
     }
 
     async loadProducts() {
@@ -20,6 +25,9 @@ class ProductManager {
         try {
             const data = JSON.stringify(this.products, null, 2);
             await fs.writeFile(this.path, data);
+            if (this.io) {
+                this.io.emit('updateProducts', this.products);
+            }
         } catch (error) {
             console.error("Error al guardar los productos:", error.message);
         }
@@ -37,7 +45,30 @@ class ProductManager {
         }
         return product;
     }
-    
+
+    addProduct(product) {
+        this.products.push(product);
+        this.saveProducts();
+    }
+
+    deleteProduct(id) {
+        this.products = this.products.filter(product => product.id !== id);
+        this.saveProducts();
+    }
 }
 
 export default ProductManager;
+
+
+
+
+
+
+
+
+
+
+
+
+
+

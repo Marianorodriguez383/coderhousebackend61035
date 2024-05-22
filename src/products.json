@@ -1,14 +1,5 @@
 [
   {
-    "id": 1,
-    "title": "Producto 1",
-    "description": "Descripción producto 1",
-    "price": 15,
-    "thumbnail": "imagen1",
-    "code": "ABD123",
-    "stock": 60
-  },
-  {
     "id": 2,
     "title": "Producto 2",
     "description": "Descripción producto 2",
@@ -88,5 +79,9 @@
     "thumbnail": "imagen11",
     "code": "ABD194",
     "stock": 78
+  },
+  {
+    "title": "Producto H",
+    "price": "515"
   }
 ]
