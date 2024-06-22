@@ -1,4 +1,61 @@
 import express from 'express';
+import CartManager from '../dao/mongo/CartManager.js';
+
+const cartsRouter = express.Router();
+const cartManager = new CartManager();
+
+cartsRouter.post("/", async (req, res) => {
+  try {
+    const newCart = await cartManager.createCart();
+    res.status(201).json(newCart);
+  } catch (error) {
+    console.error("Error al crear un nuevo carrito:", error.message);
+    res.status(500).json({ error: "Error al crear un nuevo carrito" });
+  }
+});
+
+cartsRouter.get("/:cid", async (req, res) => {
+  const cartId = req.params.cid;
+  try {
+    const cart = await cartManager.getCartById(cartId);
+    if (!cart) {
+      res.status(404).json({ error: "Carrito no encontrado" });
+      return;
+    }
+    res.json(cart.products);
+  } catch (error) {
+    console.error("Error al obtener el carrito:", error.message);
+    res.status(500).json({ error: "Error al obtener el carrito" });
+  }
+});
+
+cartsRouter.post("/:cid/product/:pid", async (req, res) => {
+  const cartId = req.params.cid;
+  const productId = req.params.pid;
+  const { quantity } = req.body;
+  try {
+    const cart = await cartManager.addProductToCart(cartId, productId, quantity || 1);
+    res.status(201).json(cart);
+  } catch (error) {
+    console.error("Error al agregar producto al carrito:", error.message);
+    res.status(500).json({ error: "Error al agregar producto al carrito" });
+  }
+});
+
+export default cartsRouter;
+
+
+
+
+
+
+
+
+
+
+
+
+/*import express from 'express';
 import fs from 'fs/promises';
 
 const cartsRouter = express.Router();
@@ -110,3 +167,4 @@ function generateUniqueId() {
 }
 
 export default cartsRouter;
+*/
