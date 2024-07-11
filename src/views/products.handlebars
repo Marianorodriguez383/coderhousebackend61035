@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Productos</title>
+</head>
+<body>
+  <h1>Productos</h1>
+  <div>
+    {{#each products}}
+      <div>
+        <h2>{{this.title}}</h2>
+        <p>{{this.description}}</p>
+        <p>Precio: {{this.price}}</p>
+        <!-- Aquí se pasa this._id y ./cartId -->
+        <button onclick="addProductToCart('{{this._id}}', '{{./cartId}}')">Agregar al carrito</button>
+      </div>
+    {{/each}}
+  </div>
+
+  <script>
+    async function addProductToCart(productId, cartId) {
+      try {
+        const response = await fetch(`/api/carts/add/${productId}`, {  // Corregido a `productId`
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ cartId: cartId })
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al agregar el producto al carrito');
+        }
+
+        const data = await response.json();
+        if (data.status === 'success') {
+          alert('Producto agregado al carrito');
+        } else {
+          throw new Error('Error al agregar el producto al carrito');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al agregar el producto al carrito');
+      }
+    }
+  </script>
+</body>
+</html>

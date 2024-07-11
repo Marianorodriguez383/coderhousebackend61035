@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import productsRouter from './routers/productsRouter.js';
 import cartsRouter from './routers/cartsRouter.js';
+import viewsRouter from './routers/viewsRouter.js'; // Importa el router de vistas
 import connectDB from './config/db.js';
 import ProductManager from './dao/fileSystem/ProductManager.js'; // Manager de FileSystem
 
@@ -23,9 +24,18 @@ const server = createServer(app);
 const io = new SocketIOServer(server);
 
 // Configuración de Handlebars
-app.engine('handlebars', engine());
+const handlebars = engine({
+  defaultLayout: false,
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  },
+});
+
+app.engine('handlebars', handlebars);
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -63,6 +73,9 @@ io.on('connection', (socket) => {
 // Middleware de rutas para productos y carritos
 app.use('/api/products', productsRouter);
 app.use('/api/carts', cartsRouter);
+
+// Agregar el router de vistas
+app.use('/views', viewsRouter);
 
 // Iniciar el servidor
 const port = 8080;

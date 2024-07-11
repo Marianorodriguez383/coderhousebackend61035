@@ -4,6 +4,7 @@ import CartManager from '../dao/mongo/CartManager.js';
 const cartsRouter = express.Router();
 const cartManager = new CartManager();
 
+// Crear un nuevo carrito
 cartsRouter.post("/", async (req, res) => {
   try {
     const newCart = await cartManager.createCart();
@@ -14,6 +15,7 @@ cartsRouter.post("/", async (req, res) => {
   }
 });
 
+// Obtener un carrito por ID con productos completos (populate)
 cartsRouter.get("/:cid", async (req, res) => {
   const cartId = req.params.cid;
   try {
@@ -29,28 +31,48 @@ cartsRouter.get("/:cid", async (req, res) => {
   }
 });
 
-cartsRouter.post("/:cid/product/:pid", async (req, res) => {
-  const cartId = req.params.cid;
-  const productId = req.params.pid;
-  const { quantity } = req.body;
+// Agregar un producto a un carrito
+cartsRouter.post("/add/:productId", async (req, res) => {
+  const productId = req.params.productId;
+  let { cartId } = req.body;
+
   try {
-    const cart = await cartManager.addProductToCart(cartId, productId, quantity || 1);
-    res.status(201).json(cart);
+    // Si no se proporciona cartId o es inválido, crea un nuevo carrito
+    if (!cartId || typeof cartId !== 'string' || cartId.trim() === '') {
+      const newCart = await cartManager.createCart(); // Crear nuevo carrito
+      cartId = newCart._id; // Obtener el ID del nuevo carrito creado
+    }
+
+    // Agregar el producto al carrito (ya sea existente o recién creado)
+    const cart = await cartManager.addProductToCart(cartId, productId);
+    res.status(200).json({ status: 'success', data: cart });
   } catch (error) {
-    console.error("Error al agregar producto al carrito:", error.message);
-    res.status(500).json({ error: "Error al agregar producto al carrito" });
+    console.error('Error al agregar el producto al carrito:', error.message);
+    res.status(500).json({ status: 'error', message: 'Error al agregar el producto al carrito' });
+  }
+
+  // Vista para visualizar un carrito específico con sus productos
+cartsRouter.get("/view/:cid", async (req, res) => {
+  const cartId = req.params.cid;
+  try {
+    const cart = await cartManager.getCartById(cartId);
+    if (!cart) {
+      return res.status(404).json({ error: "Carrito no encontrado" });
+    }
+    res.render('cartView', { cart }); // Renderiza una vista con los datos del carrito
+  } catch (error) {
+    console.error("Error al obtener el carrito:", error.message);
+    res.status(500).json({ error: "Error al obtener el carrito" });
   }
 });
 
+
+  
+});
+
+// Otras rutas para actualizar y eliminar productos del carrito
+
 export default cartsRouter;
-
-
-
-
-
-
-
-
 
 
 
